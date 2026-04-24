@@ -46,17 +46,23 @@ fix-wasm: ## Run Fix for the wasm packages (web client and idxdb store)
 .PHONY: format
 format: ## Run format using nightly toolchain
 	cargo +nightly fmt --all
-	yarn --silent prettier . --write --log-level silent
-	yarn --silent eslint . --fix
+	corepack yarn install --silent --frozen-lockfile
+	corepack yarn prettier . --write --log-level silent
+	corepack yarn eslint . --fix
 
 .PHONY: format-check
 format-check: ## Run format using nightly toolchain but only in check mode
 	cargo +nightly fmt --all --check
-	yarn --silent prettier . --check
-	yarn --silent eslint .
+	corepack yarn install --silent --frozen-lockfile
+	corepack yarn prettier . --check
+	corepack yarn eslint .
+
+.PHONY: shear
+shear: ## Run cargo-shear to find unused or misplaced dependencies
+	cargo shear
 
 .PHONY: lint
-lint: fix fix-wasm format toml clippy clippy-wasm typos-check rust-client-ts-lint web-client-check-methods ## Run all linting tasks at once (clippy, fixing, formatting, typos)
+lint: fix fix-wasm format toml clippy clippy-wasm typos-check rust-client-ts-lint web-client-check-methods shear ## Run all linting tasks at once (clippy, fixing, formatting, typos)
 
 .PHONY: toml
 toml: ## Runs Format for all TOML files
@@ -72,15 +78,15 @@ typos-check: ## Run typos to check for spelling mistakes
 
 .PHONY: rust-client-ts-lint
 rust-client-ts-lint:
-	cd crates/idxdb-store/src && yarn && yarn lint
+	cd crates/idxdb-store/src && corepack yarn install --silent --frozen-lockfile && corepack yarn lint
 
 .PHONY: web-client-check-methods
 web-client-check-methods: ## Check that all WASM methods are classified in the web client proxy
-	cd $(WEB_CLIENT_DIR) && yarn check:method-classification
+	cd $(WEB_CLIENT_DIR) && corepack yarn install --silent --frozen-lockfile && corepack yarn build && corepack yarn check:method-classification
 
 .PHONY: react-sdk-lint
 react-sdk-lint: ## Run lint for the React SDK
-	cd packages/react-sdk && yarn && yarn lint
+	cd packages/react-sdk && corepack yarn install --silent --frozen-lockfile && corepack yarn lint
 
 # --- Documentation -------------------------------------------------------------------------------
 
@@ -222,12 +228,12 @@ build-wasm: rust-client-ts-build ## Build the wasm packages (web client and idxd
 
 .PHONY: rust-client-ts-build
 rust-client-ts-build:
-	cd crates/idxdb-store/src && yarn && yarn build
+	cd crates/idxdb-store/src && corepack yarn install --silent --frozen-lockfile && corepack yarn build
 
 .PHONY: build-react-sdk
 build-react-sdk: ## Build the React SDK package
-	cd crates/web-client && yarn && yarn build
-	cd packages/react-sdk && yarn && yarn build
+	cd crates/web-client && corepack yarn install --silent --frozen-lockfile && corepack yarn build
+	cd packages/react-sdk && corepack yarn install --silent --frozen-lockfile && corepack yarn build
 
 # --- Check ---------------------------------------------------------------------------------------
 
@@ -248,6 +254,7 @@ check-tools: ## Checks if development tools are installed
 	@command -v mdbook        >/dev/null 2>&1 && echo "[OK] mdbook is installed"        || echo "[MISSING] mdbook       (make install-tools)"
 	@command -v typos         >/dev/null 2>&1 && echo "[OK] typos is installed"         || echo "[MISSING] typos        (make install-tools)"
 	@command -v cargo nextest >/dev/null 2>&1 && echo "[OK] cargo-nextest is installed" || echo "[MISSING] cargo-nextest(make install-tools)"
+	@command -v cargo-shear   >/dev/null 2>&1 && echo "[OK] cargo-shear is installed"   || echo "[MISSING] cargo-shear  (make install-tools)"
 	@command -v taplo         >/dev/null 2>&1 && echo "[OK] taplo is installed"         || echo "[MISSING] taplo        (make install-tools)"
 	@command -v yarn          >/dev/null 2>&1 && echo "[OK] yarn is installed"          || echo "[MISSING] yarn         (make install-tools)"
 	@command -v wasm-opt      >/dev/null 2>&1 && echo "[OK] wasm-opt is installed"      || echo "[MISSING] wasm-opt     (brew install binaryen / apt-get install binaryen)"
@@ -265,6 +272,7 @@ install-tools: ## Installs Rust + Node tools required by the Makefile
 	cargo install mdbook --locked
 	cargo install typos-cli@1.42.3 --locked
 	cargo install cargo-nextest@0.9.128 --locked
+	cargo install cargo-shear@1.11.2 --locked
 	cargo install taplo-cli --locked
 	# Binaryen (wasm-opt) – needed by web-client build
 	@command -v wasm-opt >/dev/null 2>&1 && echo "wasm-opt already installed" || { \

@@ -12,17 +12,19 @@ permissions:
 jobs:
   docs-check:
     name: Check that web client documentation is up-to-date
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
 
       - name: Check for bypass label
         if: github.event_name == 'pull_request'
         id: bypass
-        uses: actions/github-script@v6
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
         with:
           script: |
             const labels = context.payload.pull_request.labels.map(l => l.name);
@@ -34,7 +36,7 @@ jobs:
 
       - name: Setup Node.js
         if: github.event_name == 'push' || steps.bypass.outputs.skip != 'true'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
         with:
           node-version: '20'
 

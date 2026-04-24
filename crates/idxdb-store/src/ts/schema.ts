@@ -520,7 +520,7 @@ export class MidenDatabase {
 
     this.dexie.on("populate", () => {
       this.stateSync
-        .put({ id: 1, blockNum: 0 } as IStateSync)
+        .put({ id: 1, blockNum: 0 })
         .catch((err: unknown) =>
           logWebStoreError(err, "Failed to populate DB")
         );

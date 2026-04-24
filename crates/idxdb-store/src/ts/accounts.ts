@@ -1,6 +1,5 @@
 import {
   getDatabase,
-  IAccount,
   JsStorageMapEntry,
   JsStorageSlot,
   JsVaultAsset,
@@ -476,7 +475,7 @@ export async function applyTransactionDelta(
           accountSeed: undefined,
           accountCommitment: commitment,
           locked: false,
-        } as IAccount);
+        });
       }
     );
   } catch (error) {
@@ -800,7 +799,7 @@ export async function applyFullAccountState(
           accountSeed,
           accountCommitment,
           locked: false,
-        } as IAccount);
+        });
       }
     );
   } catch (error) {
@@ -833,7 +832,7 @@ export async function upsertAccountRecord(
       locked: false,
     };
 
-    await db.latestAccountHeaders.put(data as IAccount);
+    await db.latestAccountHeaders.put(data);
   } catch (error) {
     logWebStoreError(error, `Error inserting account: ${accountId}`);
   }
@@ -1146,7 +1145,7 @@ export async function undoAccountStates(
               accountSeed: oldHeader.accountSeed,
               accountCommitment: oldHeader.accountCommitment,
               locked: oldHeader.locked,
-            } as IAccount);
+            });
           } else {
             // No previous state — delete the account entirely
             await db.latestAccountHeaders
