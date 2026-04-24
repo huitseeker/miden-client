@@ -19,8 +19,6 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           persist-credentials: false
-
-
       - name: Check for bypass label
         if: github.event_name == 'pull_request'
         id: bypass
@@ -29,6 +27,10 @@ jobs:
           script: |
             const labels = context.payload.pull_request.labels.map(l => l.name);
             core.setOutput('skip', labels.includes('bypass-sdk-version-bump'));
+
+      - name: Cleanup large tools for build space
+        if: github.event_name == 'push' || steps.bypass.outputs.skip != 'true'
+        uses: ./.github/actions/cleanup-runner
 
       - name: Install Rust toolchain
         if: github.event_name == 'push' || steps.bypass.outputs.skip != 'true'

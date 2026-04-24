@@ -22,6 +22,8 @@ jobs:
         with:
           ref: "next"
           persist-credentials: false
+      - name: Cleanup large tools for build space
+        uses: ./.github/actions/cleanup-runner
       - name: Rustup
         run: rustup install beta && rustup default beta
       # Keep this on a released install-action commit with an explicit tool; shortcut tags can
@@ -76,6 +78,8 @@ jobs:
         with:
           ref: "next"
           persist-credentials: false
+      - name: Cleanup large tools for build space
+        uses: ./.github/actions/cleanup-runner
       - name: Add wasm target
         if: matrix.package == 'miden-client-web' || matrix.package == 'miden-idxdb-store'
         run: rustup target add wasm32-unknown-unknown
