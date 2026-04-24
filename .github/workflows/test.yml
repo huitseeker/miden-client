@@ -299,11 +299,15 @@ jobs:
         with:
           name: node-builder-artifact
           path: target/release
+      - name: Restore node-builder permissions
+        run: chmod +x target/release/testing-node-builder
       - name: Fetch note-transport binary
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: note-transport-artifact
           path: target/release
+      - name: Restore note-transport permissions
+        run: chmod +x target/release/miden-note-transport-node-bin
       - name: Start test node
         run: |
           RUST_LOG=none target/release/testing-node-builder &
@@ -417,6 +421,8 @@ jobs:
         with:
           name: node-builder-artifact
           path: target/release
+      - name: Restore node-builder permissions
+        run: chmod +x target/release/testing-node-builder
       - name: Start test node
         run: |
           RUST_LOG=none target/release/testing-node-builder &
@@ -459,6 +465,8 @@ jobs:
         with:
           name: node-builder-artifact
           path: target/release
+      - name: Restore node-builder permissions
+        run: chmod +x target/release/testing-node-builder
       - name: Start test node
         run: |
           RUST_LOG=none target/release/testing-node-builder &
@@ -498,11 +506,15 @@ jobs:
         with:
           name: node-builder-artifact
           path: target/release
+      - name: Restore node-builder permissions
+        run: chmod +x target/release/testing-node-builder
       - name: Fetch remote-prover binary
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: remote-prover-artifact
           path: target/release
+      - name: Restore remote-prover permissions
+        run: chmod +x target/release/testing-remote-prover
       - name: Start test node
         run: |
           RUST_LOG=none target/release/testing-node-builder &
