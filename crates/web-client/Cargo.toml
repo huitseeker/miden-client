@@ -55,7 +55,7 @@ js-export-macro = { path = "../js-export-macro" }
 
 # Common external dependencies
 async-trait         = { workspace = true }
-hex                 = { version = "0.4" }
+hex                 = { workspace = true }
 rand                = { workspace = true }
 serde               = { features = ["derive"], workspace = true }
 thiserror.workspace = true
@@ -64,12 +64,12 @@ thiserror.workspace = true
 console_error_panic_hook = { optional = true, version = "0.1.7" }
 idxdb-store              = { optional = true, workspace = true }
 js-sys                   = { optional = true, version = "0.3" }
-serde-wasm-bindgen       = { optional = true, version = "0.6" }
+serde-wasm-bindgen       = { optional = true, workspace = true }
 tracing                  = { optional = true, workspace = true }
-tracing-subscriber       = { default-features = false, features = ["registry"], optional = true, version = "0.3" }
+tracing-subscriber       = { default-features = false, features = ["registry"], optional = true, workspace = true }
 tracing-wasm             = { optional = true, version = "0.2" }
-wasm-bindgen             = { features = ["serde-serialize"], optional = true, version = "=0.2.108" }
-wasm-bindgen-futures     = { optional = true, version = "0.4" }
+wasm-bindgen             = { features = ["serde-serialize"], optional = true, workspace = true }
+wasm-bindgen-futures     = { optional = true, workspace = true }
 
 # Node.js-only dependencies (napi-rs)
 miden-client-sqlite-store = { optional = true, workspace = true }
